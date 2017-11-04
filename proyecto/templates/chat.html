@@ -1,0 +1,72 @@
+3<!DOCTYPE html>
+<html>
+  <style type= "text/css"> 
+    @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+  
+    .block{
+      
+      background: #387cc3;
+      width: 100px;
+      padding: 30px 30px 500px  ;
+      margin:30px;
+      position: fixed;
+      bottom:auto;
+      right:0px;
+      left:auto;
+      
+      
+      
+    }
+    input.busqueda{
+      text-align: center;
+      position:fixed;
+      bottom: auto;
+      margin: -15px
+      
+    }
+    input.escribir {
+      font-family:"Roboto", sans-serif;
+      position: fixed;
+      bottom:20px;
+      width: 999px;
+      color:white;
+      background: black;
+      
+    }
+    button.enviar{
+      font-family: "Roboto", sans-serif;
+      position;
+      border: 0;
+      bottom: 23px;
+      position: fixed;
+      right: 350px
+     }
+  
+    
+    
+  
+  </style>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>{{session}}<h1>
+    <form class="block">
+      <select class="busqueda" type ="text" placeholder="nombre" name = "OS">
+      <option value= "0"></option>
+      <option value ="1"> </option>
+        
+      </select>
+    
+    
+    </form>
+    <form action="http://127.0.0.1:8000/chat?entries=%7B%27Usuario%27%3A+%27atlas%27%7D" method="GET">
+    <input class="escribir" placeholder="escriba algo bonito" name = "barra-texto ">
+    <button class = "enviar" type="submit" value="send">SENT</button>
+    </form>
+  </body>
+</html>
