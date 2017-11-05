@@ -1,72 +1,132 @@
-3<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <style type= "text/css"> 
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+    
   
-    .block{
+    textarea.escribir {
       
-      background: #387cc3;
-      width: 100px;
-      padding: 30px 30px 500px  ;
-      margin:30px;
-      position: fixed;
-      bottom:auto;
-      right:0px;
-      left:auto;
-      
-      
-      
-    }
-    input.busqueda{
-      text-align: center;
-      position:fixed;
-      bottom: auto;
-      margin: -15px
-      
-    }
-    input.escribir {
       font-family:"Roboto", sans-serif;
-      position: fixed;
-      bottom:20px;
-      width: 999px;
+      position:absolute;
+      bottom:2%;
+      float: right;
       color:white;
       background: black;
-      
+      width: 75%;
     }
+    
+  
     button.enviar{
       font-family: "Roboto", sans-serif;
-      position;
+     
+      border:0;
+      bottom:50px;
+      position:fixed;
+      right:295px;
+      margin:0px;
+    }
+    .nombre{
+      text-align: center;
+      margin: 30px;
+      font-family: "Roboto",sans-serif;
+    }
+    .block{
+      position:absolute;
+      right:4%;
+      text-align:center;
+      background-color: rgba(62, 85, 204, 0.75);
+      float: right;
+      min-width: 280px;
+      max-width: 340px;
+      height: 80%;
+      color: #f5f5f5;
+      overflow:auto;
+      
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.5);
+      transition: opacity 200ms;
+      visibility: hidden;
+      opacity: 0;
+    } 
+    .buttonadd{
+      font-family: sans-serif;
+      outline: 0;
       border: 0;
-      bottom: 23px;
+      margin: 0 0 5px;
+      padding: 10px;
+      box-sizing: border-box;
+      align-content: center;
+
+    }
+    button.out{
+      font-family: sans-serif;
+      outline: 0;
+      border: 0;
+      margin: 0 0 5px;
+      padding: 10px;
+      box-sizing: border-box;
+      align-content: center;
+     
+    }
+    .imagen{
       position: fixed;
-      right: 350px
-     }
+      bottom: 13px;
+      right: 23px;
+      font-family: "Roboto",sans-serif;
+    }
   
+    .overlay:target {
+      visibility: visible;
+      opacity: 1;
+      position: fixed;
+      left: 30px;
+
+    }
     
-    
-  
   </style>
 
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
     <title>Chat</title>
-    <link rel="stylesheet" href="style.css">
+   
   </head>
   <body>
-    <h1>{{session}}<h1>
-    <form class="block">
-      <select class="busqueda" type ="text" placeholder="nombre" name = "OS">
-      <option value= "0"></option>
-      <option value ="1"> </option>
-        
-      </select>
     
-    
-    </form>
-    <form action="http://127.0.0.1:8000/chat?entries=%7B%27Usuario%27%3A+%27atlas%27%7D" method="GET">
-    <input class="escribir" placeholder="escriba algo bonito" name = "barra-texto ">
-    <button class = "enviar" type="submit" value="send">SENT</button>
+    <div >
+      <button><p name="addcontact" ><a class="buttonadd" href="#wpopupadd">+ </a> </p></button>
+      <button><a class = "out" name ="out" href ="/">out</a></button>
+    </div>
+    <div  class = "block" name ="block">
+      <div name ="profile">
+        <div class="nombre">
+
+          <h1>{{who}}</h1>
+          <form method="post">
+            <input type="text" placeholder="Search contacts..." class = "busqueda" />
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    <div id="wpopupadd" class="overlay">
+        <div class="popup">
+          <h2>Añadir contacto</h2> <a class="cerrar" href="#">&times;</a>
+            <form class="contenido" method="post">
+              <input type="text" name="contacto" placeholder="contacto">
+              <input type="submit" name="enviar" placeholder="enviar">
+            </form>
+        </div>
+    </div>
+    <form method="post" >
+      <p><textarea  class = "escribir" name="mensaje" placeholder="algo " rows="4"></textarea></p>
+      <button type ="submit " class = "enviar">SENT</button>
+      <input class="imagen " name ="imagen" type="file">
     </form>
   </body>
 </html>

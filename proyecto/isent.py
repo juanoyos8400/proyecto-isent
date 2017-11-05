@@ -4,7 +4,6 @@ from flask import request
 
 
 
-
 app= Flask (__name__)
 
 @app.route('/')
@@ -13,7 +12,7 @@ def home ():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-
+        global who, entries
         error = None
         if request.method == 'POST':
                 if request.form['username'] != "" and request.form['password'] != "":
@@ -27,8 +26,9 @@ def login():
                         while i < len(LineUser):
                                 if user == LineUser[i] and passw == LinePas[i]:
                                         entries = {"Usuario": user}
-                                        
-                                        return redirect(url_for('chat', entries=entries))
+                                        who = request.form["username"]
+                                        return render_template('chat.html', who=who, entries=entries)
+
                                 i = i + 1
                         else:
                                 return ("Usuario o contrasena incorrectos, intente de nuevo")
@@ -75,15 +75,20 @@ def create():
         return render_template("createuser.html")
 @app.route("/chat", methods =[ "GET","POST"])
 def chat():
+       
         if request.method == "POST":
                 if request.form["barra-texto"] != "":
                        messeg= str(request.form["barra-texto"])
+                       print(messeg)
+
                        if request.form["imagen"] != "":
                                 imagen = request.form["imagen"]
-
-
-
-
         return render_template ('chat.html')
+@app.route("/addcontact", methods = ["GET","POST"])
+def addcontact():
+        if request.method == "POST":
+                user = str(request.form['contact'])
+               
+        return render_template("addcontacts.html")
 app.run(debug = True, port = 8000 )
 
