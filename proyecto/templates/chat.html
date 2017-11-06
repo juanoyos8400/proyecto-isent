@@ -2,10 +2,10 @@
 <html>
   <style type= "text/css"> 
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
-    
-  
+
+
     textarea.escribir {
-      
+
       font-family:"Roboto", sans-serif;
       position:absolute;
       bottom:2%;
@@ -14,11 +14,11 @@
       background: black;
       width: 75%;
     }
-    
-  
+
+
     button.enviar{
       font-family: "Roboto", sans-serif;
-     
+
       border:0;
       bottom:50px;
       position:fixed;
@@ -41,7 +41,7 @@
       height: 80%;
       color: #f5f5f5;
       overflow:auto;
-      
+
     }
     .overlay {
       position: absolute;
@@ -62,9 +62,13 @@
       padding: 10px;
       box-sizing: border-box;
       align-content: center;
+      position: fixed;
+      right: 25%;
+      
 
     }
-    button.out{
+    
+    .out{
       font-family: sans-serif;
       outline: 0;
       border: 0;
@@ -72,7 +76,12 @@
       padding: 10px;
       box-sizing: border-box;
       align-content: center;
+      position: fixed;
+      right:23%;
+      bottom: 92 1%;
+      
      
+
     }
     .imagen{
       position: fixed;
@@ -80,27 +89,47 @@
       right: 23px;
       font-family: "Roboto",sans-serif;
     }
-  
+
     .overlay:target {
       visibility: visible;
       opacity: 1;
-      position: fixed;
-      left: 30px;
+      position:absolute;
+      text-align: center;
+     
 
     }
-    
+    .cerrar{
+      position: fixed;
+      right: 30%;
+      bottom: 95%;
+    }
+
   </style>
 
   <head>
- 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    
+
+
     <title>Chat</title>
-   
+
   </head>
   <body>
-    
+
     <div >
-      <button><p name="addcontact" ><a class="buttonadd" href="#wpopupadd">+ </a> </p></button>
-      <button><a class = "out" name ="out" href ="/">out</a></button>
+      
+        <p name = "addcontact">
+         <a href="#wpopupadd" class="buttonadd">
+          <span class="glyphicon glyphicon-user"></span>
+         </a>
+        </p>
+      
+    
+     
+      <a class="out" href="/"><span class="glyphicon glyphicon-off"></span></a>
     </div>
     <div  class = "block" name ="block">
       <div name ="profile">
@@ -109,19 +138,21 @@
           <h1>{{who}}</h1>
           <form method="post">
             <input type="text" placeholder="Search contacts..." class = "busqueda" />
+            <option>{{listacontactos}}</option>
+            <option>{{solicitudes}}</option>
           </form>
-          
+
         </div>
       </div>
     </div>
     <div id="wpopupadd" class="overlay">
-        <div class="popup">
-          <h2>Añadir contacto</h2> <a class="cerrar" href="#">&times;</a>
-            <form class="contenido" method="post">
-              <input type="text" name="contacto" placeholder="contacto">
-              <input type="submit" name="enviar" placeholder="enviar">
-            </form>
-        </div>
+      <div class="popup">
+        <h2>Añadir contacto</h2> <a class="cerrar" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+        <form class="contenido" method="POST">
+          <input type="text" name="contacto" placeholder="contacto">
+          <input type="submit" name="enviar" placeholder="enviar">
+        </form>
+      </div>
     </div>
     <form method="post" >
       <p><textarea  class = "escribir" name="mensaje" placeholder="algo " rows="4"></textarea></p>

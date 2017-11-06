@@ -2,17 +2,21 @@ from flask import Flask, redirect, url_for
 from flask import render_template
 from flask import request
 
+who=""
+solicitud={}
+listaContactos={}
+
 
 
 app= Flask (__name__)
 
 @app.route('/')
 def home ():
-        return render_template("index.html")
+    return render_template("index.html")
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-        global who, entries
+        global who
         error = None
         if request.method == 'POST':
                 if request.form['username'] != "" and request.form['password'] != "":
@@ -25,9 +29,11 @@ def login():
                         i = 0 
                         while i < len(LineUser):
                                 if user == LineUser[i] and passw == LinePas[i]:
-                                        entries = {"Usuario": user}
+                                        entries = {"usuario":user}
                                         who = request.form["username"]
-                                        return render_template('chat.html', who=who, entries=entries)
+                                        listaContactos[who]=""
+
+                                        return redirect(url_for('chat',entries=entries,who=who,listaContactos=listaContactos,solicitud=solicitud))
 
                                 i = i + 1
                         else:
@@ -66,29 +72,28 @@ def create():
                                 p.write(str(passw)+ ' ')
                                 p.close()
                 else:
-                        print ("digita un nuemro")
+                        return("digita un nuemro")
 
                    
 
                     
 
         return render_template("createuser.html")
-@app.route("/chat", methods =[ "GET","POST"])
-def chat():
-       
-        if request.method == "POST":
-                if request.form["barra-texto"] != "":
-                       messeg= str(request.form["barra-texto"])
-                       print(messeg)
+@app.route("/chat/<entries>/<who>/<listaContactos>/<solicitud>", methods =[ "GET","POST"])
+def chat(entries,who,listaContactos,solicitud):
+    u2 = True
+     
+    if request.method=="POST":
+        contact=(request.form["contacto"])
+        ArcUser = open("users.txt")
+        LineUser = ArcUser.readline().split(" ")
+        for i in range(len(LineUser)):
+            if contact== LineUser[i]:
+                
 
-                       if request.form["imagen"] != "":
-                                imagen = request.form["imagen"]
-        return render_template ('chat.html')
-@app.route("/addcontact", methods = ["GET","POST"])
-def addcontact():
-        if request.method == "POST":
-                user = str(request.form['contact'])
-               
-        return render_template("addcontacts.html")
+        
+
+    return render_template ('chat.html', who= who, entries=entries, listaContactos=listaContactos, solicitud=solicitud)
+
 app.run(debug = True, port = 8000 )
 
