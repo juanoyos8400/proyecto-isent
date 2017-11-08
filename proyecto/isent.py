@@ -16,7 +16,7 @@ def home ():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-        global who
+        
         error = None
         if request.method == 'POST':
                 if request.form['username'] != "" and request.form['password'] != "":
@@ -31,9 +31,9 @@ def login():
                                 if user == LineUser[i] and passw == LinePas[i]:
                                         entries = {"usuario":user}
                                         who = request.form["username"]
-                                        listaContactos[who]=""
+                                        
 
-                                        return redirect(url_for('chat',entries=entries,who=who,listaContactos=listaContactos,solicitud=solicitud))
+                                        return redirect(url_for('chat',entries=entries,who=who))
 
                                 i = i + 1
                         else:
@@ -79,21 +79,31 @@ def create():
                     
 
         return render_template("createuser.html")
-@app.route("/chat/<entries>/<who>/<listaContactos>/<solicitud>", methods =[ "GET","POST"])
-def chat(entries,who,listaContactos,solicitud):
+@app.route("/chat/<entries>/<who>", methods =[ "GET","POST"])
+def chat(entries,who):
+    global solicitud, listaContactos
     u2 = True
      
     if request.method=="POST":
-        contact=(request.form["contacto"])
+        contact=str((request.form["contacto"]))
+        for i in range(len(listaContactos)):
+            if contact == listaContactos[i]:
+                return("usuario ya esta en lista")
+
         ArcUser = open("users.txt")
         LineUser = ArcUser.readline().split(" ")
         for i in range(len(LineUser)):
             if contact== LineUser[i]:
+                solicitud[contact]=who
+                print(solicitud)
+                listaContactos[who]=contact              
+                print(listaContactos)
+                u2 = False
                 
 
         
 
-    return render_template ('chat.html', who= who, entries=entries, listaContactos=listaContactos, solicitud=solicitud)
+    return render_template ('chat.html', who= who, entries=entries,listaContactos=listaContactos,solicitud=solicitud)
 
 app.run(debug = True, port = 8000 )
 
