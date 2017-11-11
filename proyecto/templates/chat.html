@@ -138,8 +138,10 @@
           <h1>{{who}}</h1>
           <form method="post">
             <input type="text" placeholder="Search contacts..." class = "busqueda" />
-            <option>{{lineaprueba}}</option>
-            <option></option>
+            <ul>
+              {{listaContactos[who]}}
+            </ul>
+            <option>{{nwmessege["nuevoMensaje"]}}</option>
           </form>
 
         </div>
@@ -148,16 +150,15 @@
     <div id="wpopupadd" class="overlay">
       <div class="popup">
         <h2>Añadir contacto</h2> <a class="cerrar" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-        <form class="contenido" method="POST">
+        <form class="contenido" method="POST" action="">
           <input type="text" name="contacto" placeholder="contacto">
           <input type="submit" name="enviar" placeholder="enviar">
-        </form>
       </div>
     </div>
-    <form method="POST" >
-      <p><textarea  class = "escribir" name="mensaje" placeholder="algo " rows="4"></textarea></p>
+    <p><textarea  class = "escribir" name="mensaje" placeholder="algo " rows="4"></textarea></p>
       <button type ="submit " class = "enviar">SENT</button>
       <input class="imagen " name ="imagen" type="file">
+      <input type="text" name="addressee">
     </form>
   </body>
 </html>

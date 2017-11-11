@@ -5,6 +5,10 @@ from flask import request
 who=""
 solicitud={}
 listaContactos={}
+listaContactos[who]=[]
+mensajes= {}
+addressee = ""
+mensaje={}
 
 
 
@@ -16,6 +20,7 @@ def home ():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+      
         
         error = None
         if request.method == 'POST':
@@ -74,36 +79,32 @@ def create():
                 else:
                         return("digita un nuemro")
 
-                   
-
-                    
-
         return render_template("createuser.html")
 @app.route("/chat/<entries>/<who>", methods =[ "GET","POST"])
 def chat(entries,who):
-    global solicitud, listaContactos
+    global solicitud, mensajes, addressee, listaContactos, mensaje
     u2 = True
-     
+
+   
+    listaContactos[who]=[]
+    mensaje[addressee]=mensaje
     if request.method=="POST":
-        contact=str((request.form["contacto"]))
-        for i in range(len(listaContactos)):
-            if contact == listaContactos[i]:
-                return("usuario ya esta en lista")
+        if request.form["contacto"]!= "":
+            contacto = request.form["contacto"]
+            listaContactos[who].append(contacto)
+            print(listaContactos[who])
 
-        ArcUser = open("users.txt")
-        LineUser = ArcUser.readline().split(" ")
-        for i in range(len(LineUser)):
-            if contact== LineUser[i]:
-                solicitud[contact]=who
-                print(solicitud)
-                listaContactos[who]=contact              
-                print(listaContactos)
-                u2 = False
-                
+        if request.form["mensaje"] != "" and request.form["addressee"] :
+            print(len(listaContactos[who]))
+            addressee = str(request.form["addressee"])
 
-        
+            for i in range(len(listaContactos[who])):
+                if addressee == listaContactos[who]:
+                    mensaje = str(request.form ["mensaje"])
+                    mensajes[addressee] = mensaje
+    nwmessege = {"nuevoMensaje":mensaje[addressee]}
+    return render_template ('chat.html', who= who, entries=entries,listaContactos=listaContactos,solicitud=solicitud,nwmessege=nwmessege)
 
-    return render_template ('chat.html', who= who, entries=entries,listaContactos=listaContactos,solicitud=solicitud)
 
 app.run(debug = True, port = 8000 )
 
