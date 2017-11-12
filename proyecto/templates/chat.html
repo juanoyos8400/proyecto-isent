@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  
   <style type= "text/css"> 
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
@@ -108,16 +109,31 @@
 
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    
-    
-
-
     <title>Chat</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
   </head>
   <body>
+    
+  <script type="text/javascript">
+      var socket = io.connect('http://127.0.0.1:5000');
+
+      socket.on('connect', function() {
+        socket.send('user is connect');
+        });
+      socket.on('messege', function(mensaje){
+        $('#messege').append('<li>'+mensaje+'</li>');
+      });
+
+      $('#send').on('click', function() {
+        socket.send($('#mensaje').val());
+        $('#mensaje')
+
+      });
+    
+   </script>
+   <ul id="messege"></ul>
 
     <div >
       
@@ -138,10 +154,8 @@
           <h1>{{who}}</h1>
           <form method="post">
             <input type="text" placeholder="Search contacts..." class = "busqueda" />
-            <ul>
-              {{listaContactos[who]}}
-            </ul>
-            <option>{{nwmessege["nuevoMensaje"]}}</option>
+            <ul>>{{lineContact}}</ul>
+            <option></option>
           </form>
 
         </div>
@@ -155,10 +169,10 @@
           <input type="submit" name="enviar" placeholder="enviar">
       </div>
     </div>
-    <p><textarea  class = "escribir" name="mensaje" placeholder="algo " rows="4"></textarea></p>
-      <button type ="submit " class = "enviar">SENT</button>
+    <p><textarea  class = "escribir" id="mensaje" name="mensaje" placeholder="algo " rows="4"></textarea></p>
+      <button type ="submit " id="send" class = "enviar">SENT</button>
       <input class="imagen " name ="imagen" type="file">
-      <input type="text" name="addressee">
+      <input type="text"  name="addressee">
     </form>
   </body>
 </html>

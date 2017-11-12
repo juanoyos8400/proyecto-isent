@@ -1,18 +1,27 @@
 from flask import Flask, redirect, url_for
 from flask import render_template
 from flask import request
+from flask_socketio import SocketIO, send
+import os 
+
 
 who=""
-solicitud={}
-listaContactos={}
-listaContactos[who]=[]
-mensajes= {}
-addressee = ""
-mensaje={}
+
 
 
 
 app= Flask (__name__)
+app.config['SECRET_KEY']='isent'
+socketio = SocketIO(app)
+
+
+@socketio.on('message')
+def handle_message(mensaje):
+    print(mensaje)
+    send(mensaje)
+
+
+
 
 @app.route('/')
 def home ():
@@ -36,8 +45,6 @@ def login():
                                 if user == LineUser[i] and passw == LinePas[i]:
                                         entries = {"usuario":user}
                                         who = request.form["username"]
-                                        
-
                                         return redirect(url_for('chat',entries=entries,who=who))
 
                                 i = i + 1
@@ -70,41 +77,46 @@ def create():
                                         u2 = False
                                         break
                         if u2 == True:
-                                f = open ('users.txt','a')
-                                f.write(str(user)+' ')
-                                f.close()
-                                p = open ('password.txt','a')
-                                p.write(str(passw)+ ' ')
-                                p.close()
+
+                            f = open ('users.txt','a')
+                            f.write(str(user)+' ')
+                            f.close()
+                            p = open ('password.txt','a')
+                            p.write(str(passw)+ ' ')
+                            p.close()
+                            return redirect(url_for('login'))
+                            
                 else:
                         return("digita un nuemro")
 
         return render_template("createuser.html")
 @app.route("/chat/<entries>/<who>", methods =[ "GET","POST"])
 def chat(entries,who):
-    global solicitud, mensajes, addressee, listaContactos, mensaje
-    u2 = True
+    contacto=""
+    listaContactos = open(who+'.txt')
+    lineContact = listaContactos.readline().split(" ")
+  
+    if request.method == "POST":
+        if request.form["contacto"] != "":
+            u2 = True
+            listaContactos = open(who+'.txt')
+            lineContact = listaContactos.readline().split(" ")
+            contacto= str(request.form["contacto"])
+            print(contacto)
+            for i in range(len(lineContact)):
+                if lineContact[i] == contacto:
+                    u2 = False
+                    return ("usurio ya esta en lista")
+            if u2 == True :
+                file = open (who + '.txt','a')
+                file.write(str(contacto) + " ")
+                file.close()
 
    
-    listaContactos[who]=[]
-    mensaje[addressee]=mensaje
-    if request.method=="POST":
-        if request.form["contacto"]!= "":
-            contacto = request.form["contacto"]
-            listaContactos[who].append(contacto)
-            print(listaContactos[who])
-
-        if request.form["mensaje"] != "" and request.form["addressee"] :
-            print(len(listaContactos[who]))
-            addressee = str(request.form["addressee"])
-
-            for i in range(len(listaContactos[who])):
-                if addressee == listaContactos[who]:
-                    mensaje = str(request.form ["mensaje"])
-                    mensajes[addressee] = mensaje
-    nwmessege = {"nuevoMensaje":mensaje[addressee]}
-    return render_template ('chat.html', who= who, entries=entries,listaContactos=listaContactos,solicitud=solicitud,nwmessege=nwmessege)
 
 
-app.run(debug = True, port = 8000 )
+    return render_template ('chat.html', who= who, entries=entries,lineContact=lineContact)
+
+if __name__ == '__main__':
+    socketio.run(app) 
 
