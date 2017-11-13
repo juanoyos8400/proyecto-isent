@@ -110,13 +110,14 @@
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <title>Chat</title>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
   </head>
   <body>
     
   <script type="text/javascript">
+     $(document).ready(function(){
       var socket = io.connect('http://127.0.0.1:5000');
 
       socket.on('connect', function() {
@@ -124,13 +125,15 @@
         });
       socket.on('messege', function(mensaje){
         $('#messege').append('<li>'+mensaje+'</li>');
+        console.log('Recived messege')
       });
 
       $('#send').on('click', function() {
-        socket.send($('#mensaje').val());
-        $('#mensaje')
+        socket.send($('#textarea').val());
+        $('#textarea')
 
       });
+    });
     
    </script>
    <ul id="messege"></ul>
@@ -169,7 +172,7 @@
           <input type="submit" name="enviar" placeholder="enviar">
       </div>
     </div>
-    <p><textarea  class = "escribir" id="mensaje" name="mensaje" placeholder="algo " rows="4"></textarea></p>
+    <p><textarea  class = "escribir" id="textarea" name="mensaje" placeholder="algo " rows="3"></textarea></p>
       <button type ="submit " id="send" class = "enviar">SENT</button>
       <input class="imagen " name ="imagen" type="file">
       <input type="text"  name="addressee">

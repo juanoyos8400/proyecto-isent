@@ -15,10 +15,7 @@ app.config['SECRET_KEY']='isent'
 socketio = SocketIO(app)
 
 
-@socketio.on('message')
-def handle_message(mensaje):
-    print(mensaje)
-    send(mensaje)
+
 
 
 
@@ -92,6 +89,10 @@ def create():
         return render_template("createuser.html")
 @app.route("/chat/<entries>/<who>", methods =[ "GET","POST"])
 def chat(entries,who):
+    @socketio.on('message')
+    def handle_message(mensaje):
+        print('new message:'+mensaje)
+        send(mensaje, broadcast=True)
     contacto=""
     listaContactos = open(who+'.txt')
     lineContact = listaContactos.readline().split(" ")
