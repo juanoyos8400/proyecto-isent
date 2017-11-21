@@ -1,22 +1,14 @@
 from flask import Flask, redirect, url_for
 from flask import render_template
 from flask import request
-from flask_socketio import SocketIO, send
-import os 
+from flask_socketio import *
 
 
 who=""
 
 
 
-
 app= Flask (__name__)
-app.config['SECRET_KEY']='isent'
-socketio = SocketIO(app)
-
-
-
-
 
 
 
@@ -26,8 +18,7 @@ def home ():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-      
-        
+    
         error = None
         if request.method == 'POST':
                 if request.form['username'] != "" and request.form['password'] != "":
@@ -42,7 +33,8 @@ def login():
                                 if user == LineUser[i] and passw == LinePas[i]:
                                         entries = {"usuario":user}
                                         who = request.form["username"]
-                                        return redirect(url_for('chat',entries=entries,who=who))
+
+                                        return redirect(url_for('chat',who=who))
 
                                 i = i + 1
                         else:
@@ -87,12 +79,8 @@ def create():
                         return("digita un nuemro")
 
         return render_template("createuser.html")
-@app.route("/chat/<entries>/<who>", methods =[ "GET","POST"])
-def chat(entries,who):
-    @socketio.on('message')
-    def handle_message(mensaje):
-        print('new message:'+mensaje)
-        send(mensaje, broadcast=True)
+@app.route("/chat/<who>", methods =[ "GET","POST"])
+def chat(who):
     contacto=""
     listaContactos = open(who+'.txt')
     lineContact = listaContactos.readline().split(" ")
@@ -103,21 +91,43 @@ def chat(entries,who):
             listaContactos = open(who+'.txt')
             lineContact = listaContactos.readline().split(" ")
             contacto= str(request.form["contacto"])
-            print(contacto)
             for i in range(len(lineContact)):
                 if lineContact[i] == contacto:
                     u2 = False
-                    return ("usurio ya esta en lista")
+                    return render_template('chat.html',who=who, lineContact=lineContact)
+
             if u2 == True :
                 file = open (who + '.txt','a')
                 file.write(str(contacto) + " ")
                 file.close()
+                Ofile = open(contacto + '.txt','a')
+                Ofile.write(str(who)+ ' ')
+                return render_template ('chat.html',who= who, lineContact=lineContact)
+    return render_template ('chat.html', who= who,lineContact=lineContact)
 
-   
+
+@app.route("/mensajes/<who>/<Amigo>",methods=["GET","POST"])
+def Mensajerias(who,Amigo):
+    Mensajes = open(who + Amigo +'.txt')
+    Mensajes2 = open( Amigo + who +'.txt')
+    lineMensajes2= Mensajes2.readline().split(' ')
+    lineMensajes= Mensajes.readline().split(' ')
+    print(Amigo)
+    if request.method == "POST":
+         if request.form['mensaje'] != ""  : 
+            messege = request.form['mensaje']
+           
+            Mensajes = open(who + Amigo +'.txt','a')
+            Mensajes2 = open( Amigo + who +'.txt','a')
+            Mensajes.write(str(messege)+" ")
+            Mensajes2.write(str(messege)+" ")
+            print (messege)
+            return render_template ('mensajes.html',lineMensajes=lineMensajes,lineMensajes2=lineMensajes2)
+          
+    return render_template('mensajes.html',lineMensajes=lineMensajes,lineMensajes2=lineMensajes2)
 
 
-    return render_template ('chat.html', who= who, entries=entries,lineContact=lineContact)
 
 if __name__ == '__main__':
-    socketio.run(app) 
+   app.run(debug=True, port=8000)
 

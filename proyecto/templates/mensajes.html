@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<style type="text/css">
+	.mensajesYo{
+		text-align: right;
+
+	}
+	.mensajesMi{
+		text-align: left;
+	}
+</style>
+<head>
+	<title>mensajes</title>
+</head>
+<body>
+	<div>
+	{%for i in lineMensajes%}	
+	 <p class="mensajesYo">{{i}}</p>
+	 <p class="mensajesMi">{{i}}</p>
+	{%endfor%}
+	</div> 
+	<form method="POST">
+		<p><textarea  class = "escribir" id="textarea" name="mensaje" placeholder="algo " rows="3"></textarea></p>
+	      <button type ="submit " id="send" class = "enviar">SENT</button>
+	      <input class="imagen " name ="imagen" type="file">
+	      
+	</form>
+</body>
+</html>
