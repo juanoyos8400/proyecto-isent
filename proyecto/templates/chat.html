@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
   
   <style type= "text/css"> 
     @import url(https://fonts.googleapis.com/css?family=Roboto:300);
@@ -41,7 +42,8 @@
       max-width: 340px;
       height: 80%;
       color: #f5f5f5;
-      overflow:auto;
+      bottom: 12%;
+      
 
     }
     .overlay {
@@ -65,6 +67,7 @@
       align-content: center;
       position: absolute;
       right: 25%;
+      bottom: 91%;
       
 
     }
@@ -79,7 +82,7 @@
       align-content: center;
       position: absolute;
       right:23%;
-      bottom: 92 1%;
+      bottom:91%;
       
      
 
@@ -120,17 +123,35 @@
       position: absolute;
 
     }
+    .tituloA{
+      text-align: left;
+      font-family:'Oswald';
+
+    }
+    .ayuda{
+      text-align: left;
+      font-family: 'Oswald';
+     
+    }
+    .ayudas{
+      text-align: left;
+      
+      max-width: 300px;
+    }
   </style>
 
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <title>Chat</title>
-
+    <link rel="icon" type="image/png" href="https://i.imgur.com/sZp6Acf.png">
     
-    
-
   </head>
+
   <body>
+  <div class="ayudas">
+    <h2 class="tituloA">AYUDA</h2>
+    <p class="ayuda">Haz lick en el icono de persona para mandar la solicitud a alguien<br>Haz click en el icono de apagado para salir de la sesion<br>Selecciona el nombre de tu amigo para inicar una conversacion<br>Haz click en el nombre de las solicitud para aceptarla de inmediato se agregara esa persona a tu lista de contactos<br>Al momento de abrir un chat se guardaran tus conversaciones, en la barra de abajo puedes escribir y con enter o oprimiendo el boton isend se enviara.</p>
+    </div>
     
    <ul id="messege"></ul>
 
@@ -150,14 +171,23 @@
       <div name ="profile">
         <div class="nombre">
           <h1>{{who}}</h1>
+          <h3>CONTACTOS</h3>
           <form method="post">
             {%for i in lineContact%}
 
-            <a name="Amigo" id="Amigo" class="Contactos" onclick="window.open('/mensajes/{{who}}/{{i}}','_blank','scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400')">{{i}}</a>
+            <a name="Amigo" id="Amigo" class="Contactos" onclick="window.open('/mensajes/{{who}}/{{i}}','_blank','scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400' )">{{i}}</a><br>
 
             {%endfor%}
           </form>
-        </div>
+          <form method="post" action="/solicitudes/{{i}}/{{who}}">
+          <H3>SOLICITUDES</H3>
+         
+          {%for i in lineS%}
+            <a  type="submit" onclick="window.open('/solicitudes/{{i}}/{{who}}','_blank','scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400')" id="soli" name="soli">{{i}}</a>
+
+          {%endfor%}
+          </form>
+          </div>
       </div>
     </div>
     <div id="wpopupadd" class="overlay">

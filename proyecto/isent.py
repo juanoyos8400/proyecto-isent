@@ -1,16 +1,16 @@
 from flask import Flask, redirect, url_for
 from flask import render_template
 from flask import request
-from flask_socketio import *
+import time 
+
 
 
 who=""
 
 
 
+
 app= Flask (__name__)
-
-
 
 @app.route('/')
 def home ():
@@ -18,37 +18,28 @@ def home ():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-    
-        error = None
-        if request.method == 'POST':
-                if request.form['username'] != "" and request.form['password'] != "":
-                        user = str(request.form['username'])
-                        passw = str(request.form ['password' ])
-                        ArcUser = open("users.txt")
-                        ArcPas = open("password.txt")
-                        LineUser = ArcUser.readline().split(" ")
-                        LinePas = ArcPas.readline().split(" ")
-                        i = 0 
-                        while i < len(LineUser):
-                                if user == LineUser[i] and passw == LinePas[i]:
-                                        entries = {"usuario":user}
-                                        who = request.form["username"]
-
-                                        return redirect(url_for('chat',who=who))
-
-                                i = i + 1
-                        else:
-                                return ("Usuario o contrasena incorrectos, intente de nuevo")
-                else:
-                        return ("No ha introducido datos")
-               
-                          
-
-                        
-        return render_template("login.html")
-
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != "" and request.form['password'] != "":
+            user = str(request.form['username'])
+            passw = str(request.form ['password' ])
+            ArcUser = open("users.txt")
+            ArcPas = open("password.txt")
+            LineUser = ArcUser.readline().split(" ")
+            LinePas = ArcPas.readline().split(" ")
+            for i in range(len(LineUser)):
+                if user == LineUser[i] and passw == LinePas[i]:
+                    who = request.form["username"]
+                    
+                    error = False
+                    return redirect(url_for('chat',who=who))
+        else:
+            return ("No ha introducido datos")
+    return render_template("login.html",conectado=False)
+           
 @app.route("/createuser", methods=['GET','POST'])
-def create(): 
+def create():
+        
         error = None  
         user = ""
         passw = ""
@@ -56,7 +47,6 @@ def create():
                 if request.form['username'] != "" and request.form['password'] != "":
                         ArcUser = open("users.txt")
                         LineUser = ArcUser.readline().split(" ")
-                        
                         user = str(request.form['username'])
                         u2 = True
                         passw = str(request.form['password'])
@@ -73,6 +63,10 @@ def create():
                             p = open ('password.txt','a')
                             p.write(str(passw)+ ' ')
                             p.close()
+                            listaContactos = open (user + '.txt','a')
+                            listaContactos.close()
+                            solicitudes = open('solicitudes' + user+ '.txt','a')
+                            solicitudes.close()
                             return redirect(url_for('login'))
                             
                 else:
@@ -82,36 +76,39 @@ def create():
 @app.route("/chat/<who>", methods =[ "GET","POST"])
 def chat(who):
     contacto=""
-    listaContactos = open(who+'.txt')
-    lineContact = listaContactos.readline().split(" ")
+    listaContactos = open(who+'.txt','r')
+    lineContact = listaContactos.readline().split(" ") 
+    solicitudes = open('solicitudes' + who + '.txt','r')
+    lineS = solicitudes.readline().split(' ')
   
     if request.method == "POST":
-        if request.form["contacto"] != "":
-            u2 = True
-            listaContactos = open(who+'.txt')
-            lineContact = listaContactos.readline().split(" ")
-            contacto= str(request.form["contacto"])
-            for i in range(len(lineContact)):
-                if lineContact[i] == contacto:
-                    u2 = False
-                    return render_template('chat.html',who=who, lineContact=lineContact)
+            if request.form["contacto"] != "":
+                u2 = True
+                listaContactos = open(who+'.txt')
+                lineContact = listaContactos.readline().split(" ")
+                contacto= str(request.form["contacto"])
+                ArcUser = open("users.txt")
+                LineUser = ArcUser.readline().split(" ")
+                for i in range(len(lineContact)):
+                    if lineContact[i] == contacto :
+                        u2 = False
 
-            if u2 == True :
-                file = open (who + '.txt','a')
-                file.write(str(contacto) + " ")
-                file.close()
-                Ofile = open(contacto + '.txt','a')
-                Ofile.write(str(who)+ ' ')
-                return render_template ('chat.html',who= who, lineContact=lineContact)
-    return render_template ('chat.html', who= who,lineContact=lineContact)
+                        return redirect(url_for('chat',who=who))
+                for i in range(len(LineUser)):
+                    if LineUser[i] == contacto:
+                       s = open('solicitudes'+ contacto+'.txt','a')
+                       s.write(who+' ')
+                       
+                       return redirect(url_for('chat',who= who))
+    return render_template ('chat.html', who= who,lineContact=lineContact, lineS=lineS)
 
 
 @app.route("/mensajes/<who>/<Amigo>",methods=["GET","POST"])
 def Mensajerias(who,Amigo):
     Mensajes = open(who + Amigo +'.txt')
     Mensajes2 = open( Amigo + who +'.txt')
-    lineMensajes2= Mensajes2.readline().split(' ')
-    lineMensajes= Mensajes.readline().split(' ')
+    lineMensajes2= Mensajes2.readline().split(',')
+    lineMensajes= Mensajes.readline().split(',')
     print(Amigo)
     if request.method == "POST":
          if request.form['mensaje'] != ""  : 
@@ -119,12 +116,29 @@ def Mensajerias(who,Amigo):
            
             Mensajes = open(who + Amigo +'.txt','a')
             Mensajes2 = open( Amigo + who +'.txt','a')
-            Mensajes.write(str(messege)+" ")
-            Mensajes2.write(str(messege)+" ")
-            print (messege)
-            return render_template ('mensajes.html',lineMensajes=lineMensajes,lineMensajes2=lineMensajes2)
+            Mensajes.write(str(messege)+str(time.strftime('%H:%M'))+",")
+            Mensajes2.write(str(messege)+str(time.strftime('%H:%M'))+",")
+            
+            return redirect(url_for('Mensajerias',who=who,Amigo=Amigo))
           
-    return render_template('mensajes.html',lineMensajes=lineMensajes,lineMensajes2=lineMensajes2)
+    return render_template('mensajes.html',lineMensajes=lineMensajes,lineMensajes2=lineMensajes2,who=who)
+
+@app.route('/about')
+def contacto():
+    return render_template('abaut.html')
+@app.route('/solicitudes/<name>/<who>')
+def solicitud (name,who):
+    listaContactos = open(who+'.txt','a')
+    contacto= str(name)
+    nuevL= listaContactos.write(contacto+' ')
+    solicitudes=open('solicitudes'+who +'.txt')
+    listaS = solicitudes.readline().split(' ')
+    i = 0 
+    while i < len(listaS):
+        if listaS[i] == contacto:
+            listaS.pop(i)
+        i = i + 1
+    return render_template('addcontact.html')
 
 
 

@@ -1,28 +1,75 @@
 <!DOCTYPE html>
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 <html>
 
 <style type="text/css">
 	.mensajesYo{
 		text-align: right;
+		background-color: #67c73f;
+      	width: 100px;
+      	font-family: 'oswald',sans-serif;
 
 	}
 	.mensajesMi{
 		text-align: left;
 	}
+	
+
+	
+	.cuerpo{
+		background-color: #8d7ba2;
+	}
+	.envio{
+		position: absolute;
+		bottom: 12px;
+
+	}
+	.escribir{
+	   	width: 500px;
+      	font-size: 25px;
+      	font-family:'oswald',sans-serif;
+
+	}
 </style>
 <head>
 	<title>mensajes</title>
+	<link rel="icon" type="image/png" href="https://i.imgur.com/sZp6Acf.png">
+	<meta http-equiv="refresh" content="30">
+	<meta name="Vistas" content="width=device-width, initial-scale=1.0">
+
 </head>
-<body>
+<script >
+	function refresh() {
+	 	location.reload()
+ 	}
+ 
+</script>
+<body class="cuerpo">
 	<div>
+	
+	 <p id="location"></p>
+	 <p id="fecha"></p>
+	 <script>
+	 	document.getElementById('fecha').innerHTML=Date()
+	 	var map = document.getElementById('location');
+	 	function getLocation(){
+	 		if (navigator.getLocation){
+	 			navigator.getLocation.getCurrentPosition(showPosition);
+	 		}else {
+	 			x.innerHTML = 'ups'
+	 		}
+	 	}
+	 </script>
+	 
+	<div class="mensajes">
 	{%for i in lineMensajes%}	
-	 <p class="mensajesYo">{{i}}</p>
-	 <p class="mensajesMi">{{i}}</p>
+	 <p id="mensaje" class="mensajesYo">{{i}}</p>
 	{%endfor%}
+	</div>
 	</div> 
-	<form method="POST">
-		<p><textarea  class = "escribir" id="textarea" name="mensaje" placeholder="algo " rows="3"></textarea></p>
-	      <button type ="submit " id="send" class = "enviar">SENT</button>
+	<form method="POST" class="envio">
+		<input  class = "escribir" id="textarea" name="mensaje" placeholder="algo " rows="3">
+	      <button type ="submit " onclick="refresh()" id="send" class = "enviar">SENT</button>
 	      <input class="imagen " name ="imagen" type="file">
 	      
 	</form>
